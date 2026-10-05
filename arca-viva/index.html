@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arca Viva — Gestão de Zoológico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+  <canvas id="game"></canvas>
+
+  <!-- HUD do jogo -->
+  <div id="hud" class="hidden">
+    <header id="topbar">
+      <div class="brand">🦒 <span>Arca Viva</span></div>
+      <div class="stats">
+        <div class="chip" id="stMoney" data-tip="Caixa do zoológico"><span class="ic">💰</span><b>—</b></div>
+        <div class="chip" id="stVisitors" data-tip="Visitantes no parque / hoje"><span class="ic">👥</span><b>—</b></div>
+        <div class="chip" id="stRep" data-tip="Reputação: satisfação, bem-estar, educação, limpeza e conservação"><span class="ic">⭐</span><b>—</b></div>
+        <div class="chip" id="stWelfare" data-tip="Bem-estar animal médio"><span class="ic">🐾</span><b>—</b></div>
+        <div class="chip" id="stCP" data-tip="Pontos de Conservação (desbloqueiam espécies raras)"><span class="ic">🧬</span><b>—</b></div>
+        <div class="chip" id="stEdu" data-tip="Educação ambiental"><span class="ic">📚</span><b>—</b></div>
+      </div>
+      <div class="clock">
+        <div class="chip time" id="stTime" data-tip="Dia e horário (abre às 8h, fecha às 20h)"><span class="ic">🌅</span><b>—</b></div>
+        <div class="speed" id="speedBtns">
+          <button data-speed="0" data-tip="Pausar (Espaço)">⏸</button>
+          <button data-speed="1" data-tip="Velocidade normal (1)">▶</button>
+          <button data-speed="2" data-tip="Rápido (2)">⏩</button>
+          <button data-speed="4" data-tip="Muito rápido (3)">⏭</button>
+        </div>
+        <div class="weather" id="stWeather"></div>
+      </div>
+      <div class="actions">
+        <button id="btnOpen" class="toggle closed" data-tip="Abrir/fechar o zoológico para visitantes">🔒 Fechado</button>
+        <button id="btnTicket" class="chip-btn" data-tip="Preço do ingresso (clique para ajustar)">🎟️ <b>R$ 12</b></button>
+        <button id="btnSave" class="chip-btn save-ind" data-tip="Último salvamento (clique para abrir o menu e salvar)">💾 <b>—</b></button>
+        <button id="btnDash" class="icon-btn" data-tip="Painel de métricas e finanças">📊</button>
+        <button id="btnResearch" class="icon-btn" data-tip="Pesquisa">🔬</button>
+        <button id="btnStaffList" class="icon-btn" data-tip="Equipe">👷</button>
+        <button id="btnSound" class="icon-btn" data-tip="Som">🔊</button>
+        <button id="btnMenu" class="icon-btn" data-tip="Menu (Esc)">☰</button>
+      </div>
+    </header>
+
+    <div id="missionTracker"></div>
+    <div id="protocol" class="hidden"></div>
+    <div id="alerts"></div>
+    <aside id="sidepanel" class="hidden"></aside>
+    <div id="tutorialBox" class="hidden"></div>
+
+    <div id="drawer" class="hidden"></div>
+    <nav id="toolbar">
+      <button data-cat="animals"><span>🦁</span>Animais</button>
+      <button data-cat="build"><span>🏗️</span>Construção</button>
+      <button data-cat="path"><span>🛤️</span>Caminhos</button>
+      <button data-cat="nature"><span>🌳</span>Natureza</button>
+      <button data-cat="staff"><span>👷</span>Funcionários</button>
+      <button data-cat="shop"><span>🏪</span>Lojas</button>
+      <button data-cat="research"><span>🔬</span>Pesquisa</button>
+      <div class="sep"></div>
+      <button data-tool="select" class="tool active" data-tip="Selecionar (Esc)"><span>👆</span>Selecionar</button>
+      <button data-tool="move" class="tool" data-tip="Mover construção: clique no objeto e depois no destino (M)"><span>✋</span>Mover</button>
+      <button data-tool="demolish" class="tool" data-tip="Demolir: clique ou arraste"><span>🧨</span>Demolir</button>
+      <button id="btnUndo" class="tool" data-tip="Desfazer (Ctrl+Z)" disabled><span>↶</span>Desfazer</button>
+      <button id="btnLayer" class="tool" data-tip="Camadas de informação: acesso, limpeza, bem-estar e equipe (L)"><span>🗺️</span>Camadas</button>
+    </nav>
+    <div id="layerBox" class="hidden"></div>
+    <div id="buyPreview" class="hidden"></div>
+    <div id="toolHint" class="hidden"></div>
+    <canvas id="minimap" width="168" height="96" data-tip="Minimapa — clique para mover a câmera"></canvas>
+  </div>
+
+  <!-- Menu principal -->
+  <div id="menu" class="hidden"></div>
+  <!-- Janela modal -->
+  <div id="modal" class="hidden"><div class="modal-card"></div></div>
+  <div id="tooltip" class="hidden"></div>
+</div>
+
+<!-- Núcleo e dados -->
+<script src="js/core/core.js"></script>
+<script src="js/data/species.js"></script>
+<script src="js/data/objects.js"></script>
+<script src="js/data/research.js"></script>
+<script src="js/data/scenarios.js"></script>
+<script src="js/data/prefabs.js"></script>
+<!-- Mundo -->
+<script src="js/world/map.js"></script>
+<script src="js/world/enclosure.js"></script>
+<script src="js/world/buildings.js"></script>
+<script src="js/world/access.js"></script>
+<!-- Entidades -->
+<script src="js/entities/agent.js"></script>
+<script src="js/entities/animal.js"></script>
+<script src="js/entities/visitor.js"></script>
+<script src="js/entities/staff.js"></script>
+<!-- Sistemas -->
+<script src="js/systems/economy.js"></script>
+<script src="js/systems/research.js"></script>
+<script src="js/systems/events.js"></script>
+<script src="js/systems/missions.js"></script>
+<script src="js/systems/audio.js"></script>
+<script src="js/systems/diagnostics.js"></script>
+<script src="js/systems/undo.js"></script>
+<script src="js/zoo.js"></script>
+<script src="js/world/construction.js"></script>
+<script src="js/systems/services.js"></script>
+<script src="js/save.js"></script>
+<!-- Renderização e interface -->
+<script src="js/render/sprites.js"></script>
+<script src="js/render/renderer.js"></script>
+<script src="js/ui/ui.js"></script>
+<script src="js/ui/panels.js"></script>
+<script src="js/ui/modals.js"></script>
+<script src="js/ui/input.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
